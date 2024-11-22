@@ -1,4 +1,14 @@
 import random
+import os
+import time
+
+# Инициализируем таблицу умножения
+multi_table = [[0] * 9 for _ in range(9)]
+
+
+# метод очистки экрана
+def screen_clear():
+    os.system("cls" if os.name == "nt" else "clear")
 
 
 # Функция для получения корректного ввода от пользователя
@@ -10,44 +20,56 @@ def get_user_input(prompt):
             print("Пожалуйста, введите целое число.")
 
 
-# создание пустого массива
-multi_table = [[0] * 9 for _ in range(9)]
+def table_result_answer():
+    print("\nТаблица участвовавших чисел:")
+    for row in multi_table:
+        print(" ".join(map(str, row)))
 
 
-# Генерируем случайные числа для умножения
-while True:
-    # Генерируем случайные числа для умножения
-    first_multiplier = random.randint(1, 9)
-    second_multiplier = random.randint(1, 9)
+screen_clear()
+print("Добро пожаловать в тренировку по таблице умножения!")
+# print("Для выхода из программы необходимо нажать Ctrl + C.\n")
 
-    print(f"{first_multiplier} * {second_multiplier} = введите ответ")
-    correct_answer = first_multiplier * second_multiplier
+correct_answers_count = 0  # Счетчик правильных ответов
 
-    # Количество попыток
-    count_answer = 3
+try:
+    while True:
+        # Генерируем случайные числа для умножения
+        first_multiplier = random.randint(1, 9)
+        second_multiplier = random.randint(1, 9)
+        print("Для выхода из программы необходимо нажать Ctrl + C.\n")
+        print(f"{first_multiplier} * {second_multiplier} = введите ответ")
+        correct_answer = first_multiplier * second_multiplier
 
-    while count_answer > 0:
-        answer = get_user_input("Ваш ответ: ")
+        # Количество попыток
+        count_answer = 3
 
-        if answer == correct_answer:
-            print("Ты прав, молодец!")
-            multi_table[first_multiplier - 1][second_multiplier - 1] += 1
-            break  # Успех, выходим из цикла
-        else:
-            count_answer -= 1
-            if count_answer > 0:
-                print(
-                    f"Ошибочка, но ничего страшного! У тебя осталось {count_answer} попыток."
-                )
+        while count_answer > 0:
+
+            answer = get_user_input("Ваш ответ: ")
+
+            if answer == correct_answer:
+                print("Ты прав, молодец!")
+                multi_table[first_multiplier - 1][second_multiplier - 1] += 1
+                correct_answers_count += 1
+                time.sleep(1)
+                screen_clear()
+                break  # Успех, выходим из цикла
             else:
-                print(f"Попытки закончились! Правильный ответ: {correct_answer}")
+                count_answer -= 1
+                if count_answer > 0:
+                    print(
+                        f"Ошибочка, но ничего страшного! У тебя осталось {count_answer} попыток."
+                    )
+                else:
+                    print(f"Попытки закончились! Правильный ответ: {correct_answer}")
 
-    # Вывод таблицы умножения
-
-    # Спрашиваем, хочет ли пользователь продолжать
-    continue_check = input("Хотите попробовать еще раз? (да-1/нет-0): ")
-    if continue_check != "1":
-        print("Спасибо за игру! До свидания!")
-        for row in multi_table:
-            print(" ".join(map(str, row)))
-        break
+        # Каждые 5 правильных ответов сообщаем о выходе
+        if correct_answers_count > 0 and correct_answers_count % 10 == 0:
+            print(
+                f"У тебя {correct_answers_count} правильных ответов! Для выхода нажмите Ctrl + C."
+            )
+except KeyboardInterrupt:
+    print("\nВы выходите из тренировки. Спасибо за участие!")
+    # Вывод таблицы результатов
+    table_result_answer()
